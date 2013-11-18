@@ -15,6 +15,8 @@ var path = require('path')
   , describeWd4 = driverBlock.describeForApp(appPath, "android", appPkg, appAct4)
   , describeBad = driverBlock.describeForApp(badAppPath, "android", appPkg,
       appAct)
+  , describeNoPkg = driverBlock.describeForApp(appPath, "android", null, appAct)
+  , describeNoAct = driverBlock.describeForApp(appPath, "android", appPkg, null)
   , it = driverBlock.it
   , should = require('should');
 
@@ -39,6 +41,25 @@ describeWd('basic', function(h) {
         });
       };
       setTimeout(next, 4000);
+    });
+  });
+  it('should not die if commands come in', function(done) {
+    var params = {timeout: 3};
+    h.driver.execute("mobile: setCommandTimeout", [params], function(err) {
+      should.not.exist(err);
+      var start = Date.now();
+      var find = function() {
+        h.driver.elementByName('Animation', function(err, el) {
+          should.not.exist(err);
+          should.exist(el);
+          if ((Date.now() - start) < 5000) {
+            setTimeout(find, 500);
+          } else {
+            done();
+          }
+        });
+      };
+      find();
     });
   });
   it('should not fail even when bad locator strats sent in', function(done) {
@@ -117,6 +138,24 @@ describeBad('bad app path', function(h) {
     should.exist(h.connError);
     var err = JSON.parse(h.connError.data);
     err.value.origValue.should.include("Error locating the app");
+    done();
+  });
+}, null, null, null, {expectConnError: true});
+
+describeNoAct('no activity sent in with caps', function(h) {
+  it('should throw an error', function(done) {
+    should.exist(h.connError);
+    var err = JSON.parse(h.connError.data);
+    err.value.origValue.should.include("app-activity");
+    done();
+  });
+}, null, null, null, {expectConnError: true});
+
+describeNoPkg('no package sent in with caps', function(h) {
+  it('should throw an error', function(done) {
+    should.exist(h.connError);
+    var err = JSON.parse(h.connError.data);
+    err.value.origValue.should.include("app-package");
     done();
   });
 }, null, null, null, {expectConnError: true});
