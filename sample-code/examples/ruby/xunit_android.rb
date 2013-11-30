@@ -3,7 +3,11 @@
 # create by testerhome.com
 # author: seveniruby
 
+<<<<<<< HEAD
+require "test/unit"
+=======
 require 'test/unit'
+>>>>>>> 5472fa6ace842e42f69dd23fbaea9d887298e2a3
 require 'selenium-webdriver'
 
 def capabilities
@@ -11,16 +15,28 @@ def capabilities
 		'browserName' => 'android',
 		'platform' => 'linux',
 		'version' => '4.1',
+<<<<<<< HEAD
+		"app-activity"=> ".Settings",
+		"app-package"=> "com.android.settings"
+=======
 		'app-activity'=> '.Settings',
 		'app-package'=> 'com.android.settings'
+>>>>>>> 5472fa6ace842e42f69dd23fbaea9d887298e2a3
 	}
 end
 
 def init(data={})
+<<<<<<< HEAD
+	server_url = "http://127.0.0.1:4723/wd/hub"
+	driver = Selenium::WebDriver.for(:remote, :desired_capabilities => capabilities.merge(data), :url => server_url)
+	driver.manage.timeouts.implicit_wait = 20 # seconds
+	return(driver)
+=======
 	server_url = 'http://127.0.0.1:4723/wd/hub'
 	driver = Selenium::WebDriver.for(:remote, :desired_capabilities => capabilities.merge(data), :url => server_url)
 	driver.manage.timeouts.implicit_wait = 20 # seconds
 	driver
+>>>>>>> 5472fa6ace842e42f69dd23fbaea9d887298e2a3
 end
 
 class SettingsTest < Test::Unit::TestCase

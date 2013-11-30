@@ -11,7 +11,7 @@
 * Android
 * FirefoxOS
 
-## Why Appium?
+## 为什么选择appium ?
 
 1. You don't have to recompile your app or modify it in any way, due
    to use of standard automation APIs on all platforms.
