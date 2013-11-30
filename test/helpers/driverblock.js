@@ -27,6 +27,7 @@ if (process.env.SAUCE_ACCESS_KEY && process.env.SAUCE_USERNAME) {
 
 var driverBlock = function(tests, host, port, caps, extraCaps) {
   host = (typeof host === "undefined" || host === null) ? _.clone(defaultHost) : host;
+  var onSauce = host.indexOf("saucelabs") !== -1 && sauceRest;
   port = (typeof port === "undefined" || port === null) ? _.clone(defaultPort) : port;
   caps = (typeof caps === "undefined" || caps === null) ? _.clone(defaultCaps) : caps;
   caps = _.extend(caps, typeof extraCaps === "undefined" ? {} : extraCaps);
@@ -35,6 +36,10 @@ var driverBlock = function(tests, host, port, caps, extraCaps) {
   var expectConnError = extraCaps && extraCaps.expectConnError;
 
   beforeEach(function(done) {
+    if (onSauce && this.currentTest) {
+      caps.name = this.currentTest.parent.title + " " + this.currentTest.title;
+    }
+
     driverHolder.driver = wd.remote(host, port);
     var timeoutMs = caps.launchTimeout + 5000;
     var waitBetweenTries = 3000;
@@ -77,13 +82,17 @@ var driverBlock = function(tests, host, port, caps, extraCaps) {
   });
 
   afterEach(function(done) {
+    var passed = false;
+    if (this.currentTest) {
+      passed = this.currentTest.state = 'passed';
+    }
     driverHolder.driver.quit(function(err) {
       if (err && err.status && err.status.code != 6) {
         done(err);
       }
-      if (host.indexOf("saucelabs") !== -1 && sauceRest !== null) {
+      if (onSauce) {
         sauceRest.updateJob(driverHolder.sessionId, {
-          passed: true
+          passed: passed
         }, function() {
           done();
         });
@@ -130,6 +139,24 @@ var describeForSafari = function() {
 };
 describeForSafari.only = function() {
   return describeForSafari(true);
+};
+
+var describeForIWebView = function() {
+  var fn = function(desc, tests, host, port, extraCaps, onlyify) {
+    var caps = {
+      browserName: ''
+      , app: 'iwebview'
+      , device: 'iPhone Simulator'
+      , platform: 'Mac'
+      , version: "7.0"
+    };
+    return describeWithDriver(desc, tests, host, port, caps, extraCaps, undefined, onlyify);
+  };
+  fn.only = function() {
+    var a = arguments;
+    return fn(a[0], a[1], a[2], a[3], a[4], true);
+  };
+  return fn;
 };
 
 var describeForChrome = function() {
@@ -217,8 +244,8 @@ var describeForSauce = function(appUrl, device) {
       caps.platform = "LINUX";
       caps.version = "4.2";
     } else {
-      caps.version = "6.0";
-      caps.platform = "Mac 10.8";
+      caps.version = caps.version || "6.1";
+      caps.platform = caps.platform || "Mac 10.8";
     }
 
     return describeWithDriver(desc, tests, host, port, caps, extraCaps, 500000);
@@ -242,4 +269,5 @@ module.exports.describe = describeWithDriver;
 module.exports.describeForApp = describeForApp;
 module.exports.describeForSauce = describeForSauce;
 module.exports.describeForSafari = describeForSafari;
+module.exports.describeForIWebView = describeForIWebView;
 module.exports.describeForChrome = describeForChrome;

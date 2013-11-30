@@ -31,11 +31,12 @@ All flags are optional, but some are required in conjunction with certain others
 |`--avd`|null|name of the avd to launch|`--avd @default`|
 |`--device-ready-timeout`|5|(Android-only) Timeout in seconds while waiting for device to become ready|`--device-ready-timeout 5`|
 |`--safari`|false|(IOS-Only) Use the safari app||
+|`--device-name`|false|(IOS-only) Name of the device to set for the IOS Simulator|`--deviceName "iPhone Retina (3.5-inch)"`|
 |`--force-iphone`|false|(IOS-only) Use the iPhone Simulator no matter what the app wants||
 |`--force-ipad`|false|(IOS-only) Use the iPad Simulator no matter what the app wants||
-|`--calendar-format`|null|(IOS-simulator-only) set the ios simulator calendar format (gregorian|buddhist|japanese)|`--calendar-format gregorian`|
-|`--language`|null|(IOS-simulator-only) set the ios simulator language|`--language fr`|
-|`--locale`|null|(IOS-simulator-only) set the ios simulator locale|`--locale fr_CA`|
+|`--language`|null|(IOS-only) language for the iOS simulator|`--language en`|
+|`--locale`|null|(IOS-only) locale for the iOS simulator|`--locale en_US`|
+|`--calendar-format`|null|(IOS-only) calendar format for the iOS simulator|`--calendar-format gregorian`|
 |`--orientation`|null|(IOS-only) use LANDSCAPE or PORTRAIT to initialize all requests to this orientation|`--orientation LANDSCAPE`|
 |`--tracetemplate`|null|(IOS-only) .tracetemplate file to use with Instruments|`--tracetemplate /Users/me/Automation.tracetemplate`|
 |`--nodeconfig`|null|Configuration JSON file to register appium with selenium grid|`--nodeconfig /abs/path/to/nodeconfig.json`|

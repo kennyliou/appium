@@ -7,6 +7,7 @@ node_modules
 xcuserdata
 sample-code/apps/TestApp/build
 sample-code/apps/WebViewApp/build
+sample-code/apps/WebViewApp/WebViewApp.xcodeproj/project.xcworkspace/xcshareddata
 sample-code/apps/gps-demo*
 *.sublime-*
 sample-code/apps/UICatalog*
@@ -21,7 +22,7 @@ test/functional/_joined
 *.iml
 *.autosave
 .idea/
-appium*.log*
+*.log
 lib/devices/android/bootstrap/bin/*
 lib/devices/android/bootstrap/local.properties
 lib/devices/android/bootstrap/project.properties
