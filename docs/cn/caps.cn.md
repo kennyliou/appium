@@ -29,6 +29,7 @@ Appium 服务关键字
 |关键字|描述|实例|
 |----|-----------|-------|
 |`calendarFormat`| 为iOS的模拟器设置日历格式|比如. `gregorian`公历|
+|`deviceName`| iOS Simulator 的设备名|比如. `iPhone Retina (3.5-inch)`|
 |`language`| 为iOS的模拟器设置系统语言|比如. `fr`法语|
 |`launchTimeout`| 在Appium运行失败之前设置一个等待instruments的时间|比如. `20000`毫秒|
 |`locale`| 为iOS模拟器进行区域设置|比如. `fr_CA`法语|
