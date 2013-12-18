@@ -25,13 +25,15 @@ All flags are optional, but some are required in conjunction with certain others
 |`--log-no-colors`|false|Don't use colors in console output||
 |`-G`, `--webhook`|null|Also send log output to this HTTP listener|`--webhook localhost:9876`|
 |`--native-instruments-lib`|false|(IOS-only) IOS has a weird built-in unavoidable delay. We patch this in appium. If you do not want it patched, pass in this flag.||
+|`--merciful`, `-m`|false|Don't run the watcher process that will force-kill an unresponsive instruments||
 |`--app-pkg`|null|(Android-only) Java package of the Android app you want to run (e.g., com.example.android.myApp)|`--app-pkg com.example.android.myApp`|
 |`--app-activity`|null|(Android-only) Activity name for the Android activity you want to launch from your package (e.g., MainActivity)|`--app-activity MainActivity`|
 |`--app-wait-activity`|false|(Android-only) Activity name for the Android activity you want to wait for (e.g., SplashActivity)|`--app-wait-activity SplashActivity`|
 |`--avd`|null|name of the avd to launch|`--avd @default`|
 |`--device-ready-timeout`|5|(Android-only) Timeout in seconds while waiting for device to become ready|`--device-ready-timeout 5`|
 |`--safari`|false|(IOS-Only) Use the safari app||
-|`--device-name`|false|(IOS-only) Name of the device to set for the IOS Simulator|`--deviceName "iPhone Retina (3.5-inch)"`|
+|`--device-name`|null|(IOS-Simulator-only) name of the iOS device to use|`--device-name iPhone Retina (4-inch)`|
+|`--default-device`|false|(IOS-Simulator-only) use the default simulator that instruments launches on its own||
 |`--force-iphone`|false|(IOS-only) Use the iPhone Simulator no matter what the app wants||
 |`--force-ipad`|false|(IOS-only) Use the iPad Simulator no matter what the app wants||
 |`--language`|null|(IOS-only) language for the iOS simulator|`--language en`|
@@ -48,3 +50,4 @@ All flags are optional, but some are required in conjunction with certain others
 |`--keystore-password`|android|(Android-only) Password to keystore||
 |`--key-alias`|androiddebugkey|(Android-only) Key alias||
 |`--key-password`|android|(Android-only) Key password||
+|`--show-config`|false|Show info about the appium server configuration and exit||

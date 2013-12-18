@@ -17,6 +17,7 @@ var path = require('path')
   , generateServerDocs = gruntHelpers.generateServerDocs
   , generateAppiumIo = gruntHelpers.generateAppiumIo
   , setDeviceConfigVer = gruntHelpers.setDeviceConfigVer
+  , setBuildTime = gruntHelpers.setBuildTime
   , setGitRev = gruntHelpers.setGitRev
   , getGitRev = require('./lib/helpers').getGitRev
   , runTestsWithServer = gruntHelpers.runTestsWithServer;
@@ -115,8 +116,8 @@ module.exports = function(grunt) {
   grunt.registerTask('signApp', "Sign the test app", function(certName) {
     signApp("TestApp", certName, this.async());
   });
-  grunt.registerTask('authorize', "Authorize developer", function() {
-    authorize(grunt, this.async());
+  grunt.registerTask('authorize', "Authorize developer", function(insecure) {
+    authorize(grunt, insecure, this.async());
   });
   grunt.registerTask('log', "Tail appium.log", function() {
     tail(grunt, path.resolve(__dirname, "appium.log"), this.async());
@@ -150,6 +151,9 @@ module.exports = function(grunt) {
   });
   grunt.registerTask('setConfigVer', function(device) {
     setDeviceConfigVer(grunt, device, this.async());
+  });
+  grunt.registerTask('setBuildTime', function() {
+    setBuildTime(grunt, this.async());
   });
   grunt.registerTask('setGitRev', function(rev) {
     var done = this.async();
