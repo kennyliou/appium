@@ -30,7 +30,7 @@
 
 **注意：在屏幕与元素上执行操作** 这些方法都接受一个可选的’element’参数。如果存在，它将被当做已被检索元素的ID。因此，在这种情况下，该坐标只与特定元素所占矩形区域有关。所以’{x: 0.5 , y: 0.5 ,element:’3’}’的意思是元素ID为 3 的中心点坐标处。
 
-* `POST session/:sessionId/touch/tap` - 
+* `POST session/:sessionId/touch/tap` - 在屏幕或者元素上执行一次点击
     * URL 参数：要路由到会话的会话id
     * JSON 参数：
         * `tapCount` (可选, 默认 `1`): 点击次数
