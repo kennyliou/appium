@@ -1,88 +1,87 @@
-自動化移動設備手勢測試
+使移动手势自动化
 ==========================
+当selenium webDriver 提供某些交互功能的支持时，它的参数并不总是能很容易的映射到底层自动化设备（比如ios中的UIAutomation）所提供的功能。为此，Appium在WebDriver 之上为移动手势增加了额外的命令和参数。
 
-雖然Selenium WebDriver規格支援部分類型的人機互動，它的參數設置跟手機軟體所提供的自動化測試軟體不見得能吻合(例如說iOS提供的UIAutomation)。因此, Appium擴增了WebDriver規格以外的移動設備的手勢指令以及參數設置:
+* **点击**（在屏幕或者元素上）选项
+  * 手指个数
+  * 点击时长
+  * 点击次数
+  * 点击屏幕或元素的精确位置
+* **轻触**（在屏幕或者元素上）选项
+  * 手指个数
+  * 轻触开始位置
+  * 轻触结束位置
+* **拖动**（在屏幕或者元素上）选项
+  * 手指个数
+  * 拖动持续时长
+  * 拖动开始位置
+  * 拖动结束位置
+* **滑动到**（元素）
+* **滑动**
+* **摇晃**
+* **长按** (元素)
+* 设置 **orientation** 选项:
+  * 新方向 (横屏或者竖屏)
 
-* **點擊** (在螢幕或著物件上) 可設定的參數為:
-  * 手指的數量
-  * 點擊的時間
-  * 點擊的數量
-  * 精確的指明螢幕上或是物件上的點擊位置
-* **輕拂** (在螢幕或著物件上) 可設定的參數為:
-  * 手指的數量
-  * 輕拂在螢幕或著物件上的初始位置
-  * 輕拂在螢幕或著物件上的結束位置
-* **刷動/拖曳** (在螢幕或著物件上) 可設定的參數為:
-  * 手指的數量
-  * 刷動/拖曳的時間(單位為秒)
-  * 刷動在螢幕或著物件上的初始位置
-  * 刷動在螢幕或著物件上的結束位置
-* **滾動至** (物件)
-* **滑動條**
-* **震動**
-* **長時間觸碰** (物件)
-* **手機方向** 可設定的參數為:
-  * 新的方向 (倒橫或著豎立)
+## JSON Wire 协议服务器扩展
+使用下面的这些接口，我们在这个spec上，额外做了一些扩展。
 
-## JSON Wire Protocol server 擴充
-下面是一些我們所編寫的規格擴充終端。
+**注意:坐标** 下面列出的所有X和Y参数都可以通过两种方式使用。它们取值  0 到 1 之间，比如 0.5 ，它被视为屏幕尺寸或者元素尺寸的百分比。换句话说，’{x: 0.5 , y: 0.25}’意思是坐标为屏幕/元素长度的 50% ，屏幕/元素高度的 25% 。如果取值大于 1 ，它们将被看做像素。那么，坐标’{x: 100,y: 300}’就表示距离屏幕/元素左边 100 像素，距离屏幕/元素上边 300 像素。
 
-**關於坐標:** 以下所示範的所有X軸和Y軸參數都有兩種使用方式。如果此參數是介于0和1之間(例如說，0.5)，此參數將被視為螢幕或著是物件大小的百分比率。換句話說，`{x: 0.5, y: 0.25}` 指的是一個從螢幕/物件左邊開始算起50%, 然後從螢幕/物件頂部算起25%的坐標。如果參數值大於1, 此參數將被視為像素數。所以，`{x: 100, y: 300}` 所代表的是一個從螢幕/物件左邊算起300像素, 頂部算起300像素的一個坐標。
+**注意：在屏幕与元素上执行操作** 这些方法都接受一个可选的’element’参数。如果存在，它将被当做已被检索元素的ID。因此，在这种情况下，该坐标只与特定元素所占矩形区域有关。所以’{x: 0.5 , y: 0.5 ,element:’3’}’的意思是元素ID为 3 的中心点坐标处。
 
-**關於在螢幕 vs 物件執行動作:** 下列的方法全都允許提供一個非必需的"物件"參數。如果提供此參數，此參數將被視為一個已經檢索到的物件的ID。所以在這種情況下，用戶提供的坐標只會在此物件上使用。 例如說 `{x: 0.5, y: 0.5, element: '3'}` 指的是 "一個ID為'3'的物件的中心坐標".
+* `POST session/:sessionId/touch/tap` - 在屏幕或者元素上执行一次点击
+    * URL 参数：要路由到会话的会话id
+    * JSON 参数：
+        * `tapCount` (可选, 默认 `1`): 点击次数
+        * `touchCount` (可选, 默认 `1`): 触摸数量
+        * `duration` (可选, 默认 `0.1`): 点击持续时间，单位秒
+        * `x` (可选, 默认 `0.5`): 点击位置的x坐标（像素或者相对比例）
+        * `y` (可选, 默认 `0.5`): 点击位置的y坐标（像素或者相对比例）
+        * `element` (可选): 元素ID
+* `POST session:/sessionId/touch/flick_precise` - 在屏幕或者元素上执行一次轻触
+    * URL参数：要路由到会话的会话id
+    * JSON 参数:
+        * `touchCount` (可选, 默认 `1`): 触摸数量
+        * `startX` (可选, 默认 `0.5`): 轻触起点的x坐标（像素或者相对比例）
+        * `startY` (可选, 默认 `0.5`): 轻触起点的y坐标（像素或者相对比例）
+        * `endX` (必选): 轻触终点的x坐标（像素或者相对比例）
+        * `endY` (必选): 轻触终点的y坐标（像素或者相对比例）
+        * `element` (可选): 元素ID
+* `POST session:/sessionId/touch/swipe` - 在屏幕或者元素上执行一次拖动
+    * URL参数：要路由到会话的会话id
+    * JSON 参数:
+        * `touchCount` (可选, 默认 `1`): 触摸数量
+        * `startX` (可选, 默认 `0.5`): 拖动起点的x坐标（像素或者相对比例）)
+        * `startY` (可选, 默认 `0.5`): 拖动起点的y坐标（像素或者相对比例）
+        * `endX` (必选): 拖动终点的x坐标（像素或者相对比例）
+        * `endY` (必选): 拖动终点的y坐标（像素或者相对比例）
+        * `duration` (可选, 默认 `0.8`): 持续时间，单位：秒
+        * `element` (可选): 元素ID
 
-* `POST session/:sessionId/touch/tap` - 在一個螢幕或是物件上執行點擊
-    * URL 參數: 欲連接 session 的sessionId
-    * JSON 參數:
-        * `tapCount` (非必要, 預設值是 `1`): 執行點擊的次數
-        * `touchCount` (非必要, 預設值是 `1`): 執行點擊的手指的數量
-        * `duration` (非必要, 預設值是 `0.1`): 點擊觸碰的時間(秒)
-        * `x` (非必要, 預設值是 `0.5`): 點擊的 x 軸坐標 (單位是像素或著相對應的單位)
-        * `y` (非必要, 預設值是 `0.5`): 點擊的 y 軸坐標 (單位是像素或著相對應的單位)
-        * `element` (非必要): 欲在此物件執行此動作的物件的ID
-* `POST session:/sessionId/touch/flick_precise` - 在一個螢幕或是物件上執行輕拂
-    * URL Parameter: 欲連接 session 的sessionId
-    * JSON 參數:
-        * `touchCount` (非必要, 預設值是 `1`): 執行輕拂的手指的數量
-        * `startX` (非必要, 預設值是 `0.5`): 輕拂的起始 x 軸坐標 (單位是像素或著相對應的單位)
-        * `startY` (非必要, 預設值是 `0.5`): 輕拂的起始 y 軸坐標 (單位是像素或著相對應的單位)
-        * `endX` (必要): 輕拂的結束 x 軸坐標 (單位是像素或著相對應的單位)
-        * `endY` (必要): 輕拂的結束 y 軸坐標 (單位是像素或著相對應的單位)
-        * `element` (非必要): 欲在此物件執行此動作的物件的ID
-* `POST session:/sessionId/touch/swipe` - 在一個螢幕或是物件上執行刷動/拖曳
-    * URL 參數: 欲連接 session 的sessionId
-    * JSON 參數:
-        * `touchCount` (非必要, 預設值是 `1`): 執行刷動的手指數量
-        * `startX` (非必要, 預設值是 `0.5`): 刷動的起始 x 軸坐標 (單位是像素或著相對應的單位)
-        * `startY` (非必要, 預設值是 `0.5`): 刷動的起始 y 軸坐標 (單位是像素或著相對應的單位)
-        * `endX` (必要): 刷動的結束 x 軸坐標 (單位是像素或著相對應的單位)
-        * `endY` (必要): 刷動的結束 y 軸坐標 (單位是像素或著相對應的單位)
-        * `duration` (非必要, 預設值是 `0.8`): 刷動/拖曳執行所費的時間(秒)
-        * `element` (非必要): 欲在此物件執行此動作的物件的ID
+**注意：设置方向** 设置屏幕方向传入的参数与点击，轻触，拖动等方法传入的参数不同。这个动作是由屏幕的方向设置为“横向”或者“竖向”执行。下面的替换方法不适用于设置方向。
 
-**關於改變設備方向的設定:** 設定設備方向需要使用跟點擊，輕拂，拖曳所不同的參數。這個指令是透過設定瀏覽器的方向 "LANDSCAPE" 或著 "PORTRAIT" 達成的。下面所敘述的方法並不適用在改變設備方向。
+* `POST /session/:sessionId/orientation` - 设置屏幕的方向
+    * URL 参数：sessionId
+    * JSON 参数:
+        * `orientation` (必选): 新的方向，要么“横屏”要么“竖屏”
 
-* `POST /session/:sessionId/orientation` - 設定瀏覽器的方向
-    * URL 參數: 欲連接 session 的sessionId
-    * JSON 參數:
-        * `orientation` (必要): 新的方向，"LANDSCAPE" 或是 "PORTRAIT"
+## 可供选择的方法
+扩展JSON Wire协议的确很棒，但这意味着绑定的各式各样WebDriver语言将不得不用自己的方式实现对这些端点的访问。当然，用自己方式实现所花费的时间多少取决于不同的项目。我们已经制定了一个方法来解决这个延迟，使用带有特殊参数的`driver.execute()`方法。
 
-## 額外的連接方法
-擴充 JSON Wire Protocol 是不錯，但是這也代表著不同的 WebDriver 語言必須要由開發者自行編寫連接的接口。自然，這種擴充的編寫時間會依照項目的大小而改變。我們在此提議一種不同的解決方案，使用 `driver.execute()` 的特殊參數.
+`POST session/:sessionId/execute` 两个JSON参数:
+  * `script` (通常为一段js脚本)
+  * `args` (通常为要传入这段js脚本的参数数组)
 
-`POST session/:sessionId/execute` 接受兩種 JSON 參數:
-  * `script` (通常是一個 javascript 的片段)
-  * `args` (通常是的一個數列的引數, 等著發派給 javascript 引擎使用的)
-
-以新的 mobile methods 為例子來說，`script`必須要是下列參數的其中之一：
+在这些新的移动方法的情况下，`script`必须为下面情况之一:
   * `mobile: tap`
   * `mobile: flick`
   * `mobile: swipe`
   * `mobile: scrollTo`
   * `mobile: shake`
-(前綴 `mobile:` 讓我們連接這些指令到正確的接口).
+( `mobile:` 前缀让我们来路由这些请求到相应的端点).
 
-然後 `args` 將是一個只包含一個物件的數列: 一個描述欲使用的方法的參數的 Javascript 物件。假設，我想使用在某螢幕坐標上執行 `tap` 。我可以呼叫`driver.execute` 並發派下列 JSON 參數:
+`args`是一个元素的数组：一个javascript对象为相应功能定义的参数。比如说，我想在屏幕的某个位置调用‘tap’，我可以调用`driver.execute`，传入这些JSON参数：
 
 ```json
 {
@@ -93,23 +92,23 @@
   }]
 }
 ```
-在這個範例裡，我們在指上面指定的`x` 和 `y`坐標執行 `tap` 方法。
+在这个例子中，`tap`方法被调用，使用上面定义的`x` and `y`参数。
 
-## 編碼範例
-下列的範例裡都可以省略物件參數。
+##示例代码
+注意：在这些示例中，参数都是可选的。
 
-### 點擊
+### 点击
 * **WD.js:**
 
   ```js
   driver.elementsByTagName('tableCell', function(err, els) {
     var tapOpts = {
-      x: 150 // 從左方起始的像素位數
-      , y: 30 // 從上方起始的像素位數
-      , element: els[4].value // 我們想點擊的物件的id
+      x: 150 // 距离左边的像素值
+      , y: 30 // 距离上边的像素值
+      , element: els[4].value // 想要执行tap事件的元素id
     };
     driver.execute("mobile: tap", [tapOpts], function(err) {
-      // 繼續測試
+      // 继续测试
     });
   });
   ```
@@ -120,14 +119,13 @@
   WebElement row = driver.findElements(By.tagName("tableCell")).get(4);
   JavascriptExecutor js = (JavascriptExecutor) driver;
   HashMap<String, Double> tapObject = new HashMap<String, Double>();
-  tapObject.put("x", 150); // 從左方起始的像素位數
-  tapObject.put("y", 30); // 從上方起始的像素位數
-  tapObject.put("element", ((RemoteWebElement) row).getId()); // 我們想點擊的物件的id
+  tapObject.put("x", 150); // 距离左边的像素值
+  tapObject.put("y", 30); // 距离右边的像素值
+  tapObject.put("element", ((RemoteWebElement) row).getId()); // 想要执行tap事件的元素id
   js.executeScript("mobile: tap", tapObject);
   ```
   ```java
-  // 在iOS app裡，如果UI物件可識參數是"false"的話。 
-  // 使用物件位置來執行點擊。
+  //在iOS app中，如果UI 控件的visible属性为“false”，通过元素的位置进行点击.
   WebElement element = wd.findElement(By.xpath("//window[1]/scrollview[1]/image[1]"));
   JavascriptExecutor js = (JavascriptExecutor) wd;
   HashMap<String, Double> tapObject = new HashMap<String, Double>();
@@ -164,19 +162,19 @@
   driver.ExecuteScript("mobile: tap", coords);
   ```
 
-### 輕拂
+### 轻触
 
 * **WD.js:**
 
   ```js
-  // 執行一個使用兩隻手指並從螢幕中央向左的輕拂動作
+  // options for a 2-finger flick from the center of the screen to the top left
   var flickOpts = {
     endX: 0
     , endY: 0
     , touchCount: 2
   };
   driver.execute("mobile: flick", [flickOpts], function(err) {
-    // 持續測試
+    // continue testing
   });
   ```
 
@@ -191,12 +189,12 @@
   js.executeScript("mobile: flick", flickObject);
   ```
 
-### 拖曳
+### 拖动
 
 * **WD.js:**
 
   ```js
-  // 執行一個緩慢的，從螢幕右邊到左邊的拖曳動作
+  // options for a slow swipe from the right edge of the screen to the left
   var swipeOpts = {
     startX: 0.95
     , startY: 0.5
@@ -205,7 +203,7 @@
     , duration: 1.8
   };
   driver.execute("mobile: swipe", [swipeOpts], function(err) {
-    // 繼續測試
+    // continue testing
   });
   ```
 
@@ -222,23 +220,23 @@
   js.executeScript("mobile: swipe", swipeObject);
   ```
   
-### 滑動條
+### 滑动
  
  * **Java**
  
   ```java
-  // 滑動條的參數可以是一個0和1之間的數字字串
-  // 例如, "0.1" 是 百分之十, "1.0" 是 百分之百
+  // 滑块值可设置为0到1的字符类型的值
+  // 例如，"0.1" 表示 10%, "1.0" 表示 100%
   WebElement slider =  wd.findElement(By.xpath("//window[1]/slider[1]"));
   slider.sendKeys("0.1");
   ```
 
-### 設置設備方向
+### 设置方向
 
 * **WD.js:**
   ```js
   driver.setOrientation("LANDSCAPE", function(err) {
-    // 繼續測試
+    // continue testing
   });
   ```
 
@@ -247,19 +245,19 @@
   driver.orientation = "LANDSCAPE"
   ```
 
-### 滾動至
+### 滚动到
 
 ```ruby
   b = @driver.find_element :name, 'Sign In'
   @driver.execute_script 'mobile: scrollTo', :element => b.ref
 ```
 
-### 長時間碰觸
+### 长按
  
  * **c#**
  
   ```c#
-  // 長時間碰觸物件
+  // 在元素上长按
   // 
   Dictionary<string, object> parameters = new Dictionary<string, object>();
   parameters.Add("using", _attributeType);
